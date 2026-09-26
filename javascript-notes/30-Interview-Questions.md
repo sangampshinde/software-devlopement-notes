@@ -258,3 +258,66 @@ c. `Compared by value`
 | RegExp | `/abc/` |
 | Map / Set | `new Map()` |
 | Class instances | `new Person()` |
+
+
+Key characteristics
+
+a. `Mutable` — You can change their contents.
+
+```
+const obj = { name: "Alice" };
+obj.name = "Bob";        // ✅ allowed
+console.log(obj.name);   // "Bob"
+
+```
+
+b. `Copied by reference` — Assigning copies the address, not the data. Both variables point to the same object.
+
+```
+let a = { count: 1 };
+let b = a;        // b points to the SAME object
+
+b.count = 99;
+
+console.log(a.count); // 99 — a is affected too!
+
+```
+
+c. `Compared by reference`
+
+- Two objects with identical contents are not equal
+
+```
+{ name: "A" } === { name: "A" }  // false (different objects)
+[1,2] === [1,2]                  // false
+
+let x = { a: 1 };
+let y = x;
+x === y;                         // true (same reference)
+
+```
+
+d. Shallow vs Deep Copy
+
+- Shallow copy (top level only)
+
+```
+const original = { a: 1, nested: { b: 2 } };
+const shallow = { ...original };      // or Object.assign({}, original)
+
+shallow.nested.b = 99;
+console.log(original.nested.b);       // 99 — nested object still shared!
+
+```
+
+- Deep copy
+
+```
+const deep = structuredClone(original);  // modern, built-in
+// or: JSON.parse(JSON.stringify(original)) — older, has limitations
+
+```
+
+## 5. What is the difference between `function declarations` and `function expressions`?
+
+- Both create functions, but they differ in syntax, hoisting, naming, and when they can be used.
