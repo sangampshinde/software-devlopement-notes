@@ -213,3 +213,48 @@ here are 7 primitive types in JavaScript:
 | `symbol` | `Symbol("id")` | Unique, immutable identifier (ES6) |
 | `bigint` | `123n` | Arbitrarily large integers (ES2020) |
 
+Key characteristics
+
+a. `Immutable` — You can't change the value itself; you can only reassign the variable.
+
+```
+let str = "hello";
+str.toUpperCase();   // "HELLO" — returns a new string
+console.log(str);    // "hello" — original unchanged
+
+```
+
+b. `Copied by value` — Assigning to another variable copies the value.
+
+```
+
+let a = 10;
+let b = a;
+b = 20;
+
+console.log(a); // 10 (unchanged)
+console.log(b); // 20
+
+```
+
+c. `Compared by value`
+
+```
+"abc" === "abc"  // true
+5 === 5          // true
+
+```
+
+2. Non-Primitive (Reference) Data Types
+
+- There is really one non-primitive type: `object` — but it has many forms:
+
+| Type | Example |
+|---|---|
+| Plain object | `{ name: "Alice" }` |
+| Array | `[1, 2, 3]` |
+| Function | `function() {}` |
+| Date | `new Date()` |
+| RegExp | `/abc/` |
+| Map / Set | `new Map()` |
+| Class instances | `new Person()` |
