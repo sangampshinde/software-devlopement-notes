@@ -414,3 +414,58 @@ const add = function addFn(a, b) { return a + b; };
 const add = (a, b) => a + b;
 
 ```
+
+## 6.Explain closures in JavaScript with a practical example ?
+
+A `closure` is a function that "remembers" the variables from the scope where it was created, even after that outer scope has finished executing.
+
+```
+function outer() {
+  let count = 0;
+
+  function inner() {
+    count++;
+    console.log(count);
+  }
+
+  return inner;
+}
+
+const counter = outer();
+counter(); // 1
+counter(); // 2
+counter(); // 3
+
+```
+
+```
+function createCounter(start = 0) {
+  let count = start;
+
+  return {
+    increment() {
+      count++;
+      return count;
+    },
+    decrement() {
+      count--;
+      return count;
+    },
+    value() {
+      return count;
+    },
+  };
+}
+
+const counterA = createCounter();
+const counterB = createCounter(100);
+
+counterA.increment(); // 1
+counterA.increment(); // 2
+
+counterB.increment(); // 101
+
+console.log(counterA.value()); // 2
+console.log(counterB.value()); // 101
+
+```
