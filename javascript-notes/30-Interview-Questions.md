@@ -1,4 +1,4 @@
-## 1.What are the differences between var, let, and const in JavaScript?
+## 1.What are the differences between `var`, `let`, and `const` in JavaScript?
 
 Here's a comprehensive breakdown of the differences between var, let, and const in JavaScript:
 
