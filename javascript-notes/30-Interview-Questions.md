@@ -321,3 +321,96 @@ const deep = structuredClone(original);  // modern, built-in
 ## 5. What is the difference between `function declarations` and `function expressions`?
 
 - Both create functions, but they differ in syntax, hoisting, naming, and when they can be used.
+
+1. Syntax
+
+Function Declaration
+
+- A statement that starts with the function keyword followed by a name:
+
+```
+function greet(name) {
+  return "Hello, " + name;
+}
+
+```
+
+Function Expression
+
+- A function assigned to a variable or used as a value:
+
+```
+
+const greet = function (name) {
+  return "Hello, " + name;
+};
+
+```
+The function is part of an expression — it's being assigned, passed, or returned.
+
+
+2. Hoisting — The Biggest Difference
+
+- Function declarations are fully hoisted
+
+You can call them before they appear in the code:
+
+```
+sayHi(); // ✅ Works
+
+function sayHi() {
+  console.log("Hi!");
+}
+
+```
+
+```
+sayHi(); // ❌ TypeError: sayHi is not a function
+
+var sayHi = function () {
+  console.log("Hi!");
+};
+
+
+
+
+```
+
+```
+
+sayHi(); // ❌ ReferenceError (TDZ)
+
+const sayHi = function () {
+  console.log("Hi!");
+};
+
+```
+
+3. Naming
+
+- Function declarations must have a name
+
+```
+function add(a, b) { return a + b; }  // ✅ required
+
+```
+
+- Function expressions can be anonymous or named
+
+```
+// Anonymous
+const add = function (a, b) { return a + b; };
+
+// Named function expression (NFE)
+const add = function addFn(a, b) { return a + b; };
+
+```
+
+4. Arrow Functions (a Form of Function Expression)
+
+- Arrow functions are always expressions — they have no declaration form:
+
+```
+const add = (a, b) => a + b;
+
+```
