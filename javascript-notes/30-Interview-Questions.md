@@ -174,7 +174,7 @@ test();
 
 ```
 
-## Difference Between == and === in JavaScript ?
+## 3. Difference Between == and === in JavaScript ?
 
 - `==`  — Loose equality (compares value after type coercion)
 - `===` — Strict equality (compares value AND type, no coercion)
@@ -193,3 +193,23 @@ test();
 | `[1] == 1` | `true` | `false` |
 | `"1" == true` | `true` | `false` |
 | `{} == {}` | `false` | `false` |
+
+
+## 4 What are primitive and non-primitive data types in JavaScript?
+
+- JavaScript data types fall into two big categories based on how they are stored and copied in memory.
+
+1. Primitive Data Types
+
+here are 7 primitive types in JavaScript:
+
+| Type | Example | Description |
+|---|---|---|
+| `string` | `"hello"` | Text |
+| `number` | `42`, `3.14` | Integer or float (also `NaN`, `Infinity`) |
+| `boolean` | `true`, `false` | Logical value |
+| `undefined` | `undefined` | Declared but not assigned |
+| `null` | `null` | Intentional "no value" |
+| `symbol` | `Symbol("id")` | Unique, immutable identifier (ES6) |
+| `bigint` | `123n` | Arbitrarily large integers (ES2020) |
+
