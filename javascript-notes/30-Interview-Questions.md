@@ -469,3 +469,82 @@ console.log(counterA.value()); // 2
 console.log(counterB.value()); // 101
 
 ```
+
+## 7 What is the difference between `call`, `apply`, and `bind`?
+
+- All three methods let you control what this refers to inside a function
+- The difference is how they pass arguments and whether they invoke the function immediately.
+
+1. Basic Syntax
+
+```
+fn.call(thisArg, arg1, arg2, ...)
+fn.apply(thisArg, [arg1, arg2, ...])
+const bound = fn.bind(thisArg, arg1, arg2, ...)
+
+```
+
+`call` — Invoke with Arguments Listed
+
+- Runs immediately.
+- Arguments passed one by one.
+
+example:
+
+```
+function greet(greeting, punctuation) {
+  console.log(`${greeting}, ${this.name}${punctuation}`);
+}
+
+const person = { name: "Alice" };
+
+greet.call(person, "Hello", "!");  // Hello, Alice!
+
+```
+
+`apply` — Invoke with Arguments in an Array
+- Runs immediately.
+- Arguments passed as an array (or array-like object).
+
+
+example:
+
+```
+greet.apply(person, ["Hi", "?"]);  // Hi, Alice?
+
+```
+
+`bind ` — Create a New Function with Locked `this`
+- Does not invoke the function.
+- Returns a new function with `this` permanently bound.
+- You can also preset arguments (partial application).
+
+example:
+
+```
+const boundGreet = greet.bind(person, "Hey");
+boundGreet("!!!"); // Hey, Alice!!!
+
+```
+
+```
+function introduce(age, city) {
+  console.log(`${this.name} is ${age} from ${city}`);
+}
+
+const user = { name: "Bob" };
+
+// call — args listed
+introduce.call(user, 30, "Delhi");
+// Bob is 30 from Delhi
+
+// apply — args in array
+introduce.apply(user, [30, "Delhi"]);
+// Bob is 30 from Delhi
+
+// bind — returns a function
+const boundIntro = introduce.bind(user, 30);
+boundIntro("Mumbai");
+// Bob is 30 from Mumbai
+
+```
