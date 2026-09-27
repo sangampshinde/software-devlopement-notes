@@ -655,3 +655,71 @@ const Arrow = () => {};
 console.log(Arrow.prototype);   // undefined
 
 ```
+
+4. No Hoisting (as Expressions)
+
+```
+greet(); // ❌ ReferenceError
+
+const greet = () => console.log("hi");
+
+```
+
+```
+greet(); // ✅ Works
+
+function greet() {
+  console.log("hi");
+}
+
+```
+
+## 9 What is the difference between null and undefined?
+
+Both represent "no value" 
+
+1. `undefined` — The Default "Nothing
+
+- `undefined` is what JavaScript assigns automatically when a value hasn't been given.
+
+example:
+
+```
+
+let a;
+console.log(a); // undefined — declared but not assigned
+
+function greet(name) {}
+greet(); // name = undefined — argument not passed
+
+const obj = {};
+console.log(obj.missing); // undefined — property doesn't exist
+
+function noReturn() {}
+console.log(noReturn()); // undefined — no return statement
+
+const arr = [1, 2, 3];
+console.log(arr[10]); // undefined — index out of bounds
+
+```
+
+2. `null` — The Intentional "Nothing"
+
+- `null` is a value you assign to explicitly say "this is empty on purpose."
+
+example:
+
+```
+let user = null; // deliberately no user yet
+
+// Later...
+user = { name: "Alice" };
+
+```
+
+```
+typeof undefined; // "undefined"
+typeof null;      // "object"  ⚠️ historical bug from 1995
+
+```
+
