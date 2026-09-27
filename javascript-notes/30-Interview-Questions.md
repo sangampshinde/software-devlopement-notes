@@ -548,3 +548,110 @@ boundIntro("Mumbai");
 // Bob is 30 from Mumbai
 
 ```
+
+## 8 What are `arrow functions`, and how do they differ from `regular functions`?
+
+- Arrow functions are a shorter syntax for writing functions, introduced in ES6 (2015).
+- Beyond being concise, they behave differently from regular functions in several important ways
+
+1. Syntax
+
+```
+// normal function
+function add(a, b) {
+  return a + b;
+}
+
+
+// arrow function
+const add = (a, b) => a + b;
+
+```
+
+2. `this` Binding — The Biggest Difference
+
+```
+const counter = {
+  count: 0,
+  increment: function () {
+    console.log(this.count++);
+  },
+};
+
+counter.increment(); // 0, 1, 2...  (this = counter)
+
+```
+
+Arrow functions inherit this lexically (from where they're defined)
+
+```
+const counter = {
+  count: 0,
+  increment: () => {
+    console.log(this.count++); // this = outer scope, NOT counter
+  },
+};
+
+counter.increment(); // NaN
+
+
+```
+Because of this, arrow functions are a poor choice for object methods — but they shine inside callbacks:
+
+
+```
+const counter = {
+  count: 0,
+  start() {
+    setInterval(() => {
+      this.count++; // arrow inherits `this` from start()
+      console.log(this.count);
+    }, 1000);
+  },
+};
+
+```
+
+2. No arguments Object
+- Regular functions have an `arguments object` — arrow functions don't
+
+```
+function sum() {
+  return Array.from(arguments).reduce((a, b) => a + b, 0);
+}
+sum(1, 2, 3); // 6
+
+
+
+const sum = () => {
+  console.log(arguments); // ❌ ReferenceError
+};
+
+
+const sum = (...nums) => nums.reduce((a, b) => a + b, 0);
+sum(1, 2, 3); // 6
+
+```
+
+3. Cannot Be Used as Constructors
+
+```
+const Person = (name) => {
+  this.name = name;
+};
+
+new Person("Alice"); // ❌ TypeError: Person is not a constructor
+
+```
+
+They also don't have a prototype property:
+
+```
+
+function Regular() {}
+console.log(Regular.prototype); // {}
+
+const Arrow = () => {};
+console.log(Arrow.prototype);   // undefined
+
+```
