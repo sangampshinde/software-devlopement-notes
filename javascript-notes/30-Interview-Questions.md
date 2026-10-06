@@ -723,3 +723,156 @@ typeof null;      // "object"  ⚠️ historical bug from 1995
 
 ```
 
+## 10 What is the difference between pass by value and pass by reference in JavaScript?
+
+1. Pass by Value — Primitives
+
+When you pass a primitive, the function gets its own copy. Modifying it inside the function doesn't affect the outside variable.
+
+```
+function changeValue(x) {
+  x = 100;
+  console.log("Inside:", x); // 100
+}
+
+let num = 5;
+changeValue(num);
+console.log("Outside:", num); // 5 — unchanged
+
+```
+
+2. Pass by Reference (Sharing) — Objects
+
+When you pass an object, the function receives a copy of the reference — both the original variable and the parameter point to the same object in memory.
+
+```
+function changeObject(obj) {
+  obj.value = 200;
+  console.log("Inside:", obj.value); // 200
+}
+
+let myObj = { value: 50 };
+changeObject(myObj);
+console.log("Outside:", myObj.value); // 200 — modified!
+
+```
+
+## 11. What is prototypal inheritance in JavaScript?
+
+`Prototypal inheritance` is JavaScript's built-in mechanism for sharing properties and methods between objects.
+
+Every object has a hidden property called `[[Prototype]]` (accessible via `__proto__` or `Object.getPrototypeOf()`) that points to another object.
+
+When you access a property that doesn't exist on an object, JavaScript automatically traverses the **prototype chain** — moving from object → prototype → prototype's prototype, until it finds the property or reaches `null`.
+
+1. Prototype Chain with `Object.create()`
+
+`Object.create()` creates a new object using an existing object as its prototype.
+
+example:
+
+```javascript
+
+const animal = {
+  eats: true,
+  speak() {
+    console.log("Some sound");
+  }
+};
+
+const dog = Object.create(animal);
+dog.barks = true;
+
+const puppy = Object.create(dog);
+
+console.log(puppy.barks);  // true — from dog (own property)
+console.log(puppy.eats);   // true — from animal (inherited)
+puppy.speak();             // "Some sound" — from animal (inherited)
+```
+
+2. Constructor Functions and `.prototype`
+
+Functions have a `.prototype` property that becomes the `[[Prototype]]` for instances created with `new`.
+
+example:
+
+```javascript
+function Person(name) {
+  this.name = name;
+}
+
+// Attach method to prototype (shared across all instances)
+Person.prototype.greet = function () {
+  console.log(`Hello, my name is ${this.name}`);
+};
+
+const user1 = new Person("Alice");
+const user2 = new Person("Bob");
+
+user1.greet(); // "Hello, my name is Alice"
+user2.greet(); // "Hello, my name is Bob"
+
+console.log(user1.__proto__ === Person.prototype); // true
+```
+
+3. Property Shadowing (Method Overriding)
+
+If an object defines a property with the same name as one in its prototype, it "shadows" (overrides) the inherited property.
+
+example:
+
+```javascript
+const parent = { role: "User" };
+const admin = Object.create(parent);
+admin.role = "Admin"; // Shadows parent's role
+
+console.log(admin.role);  // "Admin" (from own property)
+console.log(parent.role); // "User"  (parent remains unchanged)
+```
+
+4. `__proto__` vs `prototype`
+
+| Feature | `__proto__` | `prototype` |
+|---|---|---|
+| **Where it exists** | On **all objects** (instances) | Only on **constructor functions / classes** |
+| **Purpose** | Points to the object's parent prototype | Template used to set `__proto__` for newly created instances |
+
+example:
+
+```javascript
+function Car() {}
+const myCar = new Car();
+
+console.log(myCar.__proto__ === Car.prototype); // true
+console.log(Car.prototype.__proto__ === Object.prototype); // true
+console.log(Object.prototype.__proto__); // null (end of chain)
+```
+
+5. ES6 Classes (Syntactic Sugar)
+
+Classes in modern JavaScript use prototypal inheritance under the hood.
+
+example:
+
+```javascript
+class Animal {
+  constructor(name) {
+    this.name = name;
+  }
+  speak() {
+    console.log(`${this.name} makes a noise.`);
+  }
+}
+
+class Dog extends Animal {
+  speak() {
+    console.log(`${this.name} barks.`);
+  }
+}
+
+const dog = new Dog("Rex");
+dog.speak(); // "Rex barks." (method shadowed)
+```
+
+
+
