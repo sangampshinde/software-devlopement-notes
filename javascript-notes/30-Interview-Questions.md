@@ -944,6 +944,257 @@ const regularObj = {};
 console.log(regularObj.toString); // [Function: toString]
 ```
 
+## 13. What is the `this` keyword in JavaScript? How is its value determined?
+
+`this` is a special keyword that refers to the **execution context** — the object that currently owns the executing code.
+
+Its value is **not fixed** and depends entirely on **how and where** a function is called. JavaScript has four primary rules for determining `this`:
+
+1. Global Context
+
+In the global scope (outside any function), `this` refers to the global object:
+
+- In browsers: `window`
+- In Node.js: `global`
+- In ES modules: `undefined`
+
+example:
+
+```javascript
+console.log(this); // window (browser) / undefined (ES module)
+
+function showGlobal() {
+  console.log(this === window); // true (browser)
+}
+
+showGlobal();
+```
+
+2. Method Invocation
+
+When a function is called as a method of an object, `this` refers to the **object that owns the method**.
+
+example:
+
+```javascript
+const user = {
+  name: "Alice",
+  greet() {
+    console.log(`Hello, my name is ${this.name}`);
+  }
+};
+
+user.greet(); // "Hello, my name is Alice" — this = user
+
+// Even with destructuring, 'this' still refers to 'user'
+const { greet } = user;
+greet(); // "Hello, my name is Alice" ✅ (lexical doesn't apply to methods)
+```
+
+3. Constructor Invocation (`new`)
+
+When a function is called with `new`, it acts as a constructor. `this` refers to:
+
+- The **newly created instance** (the object being constructed)
+
+example:
+
+```javascript
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+}
+
+const user = new Person("Bob", 25);
+
+console.log(user.name); // "Bob" — this = user
+console.log(user.age);  // 25
+console.log(user instanceof Person); // true ✅
+```
+
+4. Explicit Binding (`call`, `apply`, `bind`)
+
+You can explicitly set `this` using:
+
+- `call()`: Call function with `this` set to the first argument
+- `apply()`: Same as call, but arguments are passed as an array
+- `bind()`: Returns a new function with `this` permanently bound
+
+example:
+
+```javascript
+function showDetails(city, country) {
+  console.log(`Name: ${this.name}, ${this.age}, from ${city}, ${country}`);
+}
+
+const person1 = { name: "Charlie", age: 30 };
+const person2 = { name: "Diana", age: 28 };
+
+// Using call()
+showDetails.call(person1, "Toronto", "Canada");
+// Output: Name: Charlie, 30, from Toronto, Canada
+
+// Using apply()
+showDetails.apply(person2, ["Vancouver", "Canada"]);
+// Output: Name: Diana, 28, from Vancouver, Canada
+
+// Using bind() (returns a new function)
+const showCharlie = showDetails.bind(person1, "Toronto", "Canada");
+showCharlie(); // "Name: Charlie, 30, from Toronto, Canada" ✅
+
+// 'this' is permanently bound
+console.log(showCharlie.__proto__ === Function.prototype); // true
+```
+
+5. Arrow Functions — Lexical `this`
+
+Arrow functions **do not have their own `this`**. Instead, they inherit `this` from the **enclosing lexical scope** (the scope where they are defined).
+
+example:
+
+```javascript
+const user = {
+  name: "Eve",
+  
+  // Traditional function - 'this' refers to 'user'
+  regularMethod() {
+    setTimeout(function () {
+      console.log(this.name); // undefined (window/global in non-strict)
+    }, 1000);
+  },
+
+  // Arrow function - 'this' is inherited from 'user'
+  arrowMethod() {
+    setTimeout(() => {
+      console.log(this.name); // "Eve" ✅ (lexical 'this' preserved)
+    }, 1000);
+  }
+};
+
+user.regularMethod(); // undefined
+user.arrowMethod(); // "Eve"
+```
+
+6. `this` in Nested Functions
+
+When a nested function (including arrow functions) is called in a non-method context, `this` points to:
+
+- The **global object** (browser) or `undefined` (ES module) in non-strict mode
+- `undefined` in strict mode
+- **NOT** the outer function's `this`
+
+example:
+
+```javascript
+const user = {
+  name: "Frank",
+  
+  nestedMethod() {
+    function nestedFunc() {
+      console.log(this); // window/undefined (not user)
+    }
+    nestedFunc();
+  }
+};
+
+user.nestedMethod(); // window/undefined
+```
+
+To preserve `this` in nested functions, use arrow functions (Rule 5) or bind the method:
+
+```javascript
+const user = {
+  name: "Frank",
+  
+  nestedMethod() {
+    const nestedArrow = () => {
+      console.log(this.name); // "Frank" ✅ (lexical 'this')
+    };
+    nestedArrow();
+    
+    // OR
+    setTimeout(nestedFunc.bind(this), 1000); // "Frank" ✅
+  }
+};
+
+user.nestedMethod(); // "Frank"
+```
+
+Summary Table
+
+| Invocation Type | `this` Value |
+|---|---|
+| Global scope (not in function) | Global object (window/global) or `undefined` (ES modules) |
+| Global scope (inside non-arrow function) | Global object (browser) or `undefined` (ES module) |
+| Global scope (inside arrow function) | Inherited from lexical scope (usually global/module) |
+| Method call (`obj.method()`) | The object the method is called on (`obj`) |
+| Constructor (`new Func()`) | The newly created instance |
+| `call(obj, ...)` or `apply(obj, ...)` | The object passed as the first argument |
+| `bind(obj)` | The object passed as the first argument (permanently bound) |
+| Nested arrow function | Inherited from enclosing lexical scope |
+| Nested regular function | Global object or `undefined` (lexical scope) |
+
+Common Pitfalls
+
+Pitfall 1: Method losing context in callbacks
+
+```javascript
+const user = {
+  name: "Grace",
+  greet() {
+    console.log(`Hello, ${this.name}`);
+  }
+};
+
+setTimeout(user.greet, 1000); // "Hello, undefined" ❌ (this = global)
+```
+
+Solution:
+
+```javascript
+setTimeout(user.greet.bind(user), 1000); // "Hello, Grace" ✅
+
+// OR use arrow function
+setTimeout(() => user.greet(), 1000); // "Hello, Grace" ✅
+```
+
+Pitfall 2: Arrow function inside class constructor
+
+```javascript
+class User {
+  constructor() {
+    this.name = "Heidi";
+    this.arrow = () => {
+      console.log(this.name); // "Heidi" ✅ (lexical)
+    };
+  }
+}
+
+const user = new User();
+user.arrow(); // "Heidi"
+```
+
+If you need regular methods that inherit `this`:
+
+```javascript
+class User {
+  constructor() {
+    this.name = "Ivy";
+  }
+
+  // Regular method - 'this' refers to instance when called as 'user.greet()'
+  greet() {
+    console.log(`Hello, ${this.name}`);
+  }
+}
+
+const user = new User();
+user.greet(); // "Hello, Ivy" ✅
+```
+
+
+
+
 
 
 
