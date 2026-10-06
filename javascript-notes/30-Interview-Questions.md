@@ -874,5 +874,76 @@ const dog = new Dog("Rex");
 dog.speak(); // "Rex barks." (method shadowed)
 ```
 
+## 12. What is the difference between `Object.create()` and using a constructor function?
+
+Both create new objects linked to a prototype, but they differ in how properties are initialized and whether constructor code runs.
+
+1. `Object.create()` — Direct Prototype Delegation
+
+- Creates a new empty object and sets its `[[Prototype]]` directly to the specified object.
+- **Does NOT** execute any constructor function or initialize instance properties automatically.
+- Allows creating objects without any prototype via `Object.create(null)` (useful for clean lookup maps).
+
+example:
+
+```javascript
+const personProto = {
+  greet() {
+    console.log(`Hello, my name is ${this.name}`);
+  }
+};
+
+// Creates {} with personProto as its prototype
+const user = Object.create(personProto);
+user.name = "Alice"; // Must assign properties manually
+
+user.greet(); // "Hello, my name is Alice"
+console.log(user.__proto__ === personProto); // true
+```
+
+2. Constructor Functions (`new`) — Instance Initializer
+
+- Uses the `new` keyword to invoke a constructor function.
+- Automatically creates an object, binds `this`, **runs the constructor function body** to initialize properties, and links `[[Prototype]]` to `Constructor.prototype`.
+
+example:
+
+```javascript
+function Person(name, age) {
+  this.name = name; // Initializes instance state automatically
+  this.age = age;
+}
+
+Person.prototype.greet = function () {
+  console.log(`Hello, my name is ${this.name}`);
+};
+
+const user = new Person("Bob", 25);
+
+user.greet(); // "Hello, my name is Bob"
+console.log(user.__proto__ === Person.prototype); // true
+```
+
+3. Key Differences
+
+| Feature | `Object.create(proto)` | Constructor Function (`new Func()`) |
+|---|---|---|
+| **Runs Constructor?** | ❌ No constructor execution | ✅ Executes constructor code to set up instance state |
+| **Prototype Target** | Directly sets the passed object as `[[Prototype]]` | Sets `[[Prototype]]` to `Func.prototype` |
+| **Argument Passing** | Takes prototype object (+ optional property descriptors) | Takes custom arguments passed to constructor |
+| **Prototype-less Object** | ✅ `Object.create(null)` has no prototype | ❌ Always inherits from `Object.prototype` |
+| **Primary Use Case** | Object-to-object inheritance & delegation | Creating multiple instances with unique instance data |
+
+example: Creating a truly empty dictionary (no built-in methods like `toString`):
+
+```javascript
+const cleanDict = Object.create(null);
+console.log(cleanDict.toString); // undefined (no prototype pollution risk)
+
+const regularObj = {};
+console.log(regularObj.toString); // [Function: toString]
+```
+
+
 
 
