@@ -126,6 +126,7 @@ O(1)
 
 ```
 
+
 ```
 
 Input grows
@@ -135,3 +136,68 @@ Work stays approximately the same
 O(1)
 
 ```
+
+```
+
+function getLast(nums: number[]): number {
+    return nums[nums.length - 1];
+}
+
+```
+```
+
+O(1)
+
+```
+
+4. `O(n)` — Linear Time
+
+Example:
+
+```
+
+function printAll(nums: number[]): void {
+    for (const num of nums) {
+        console.log(num);
+    }
+}
+
+```
+
+If:
+
+```
+n = 10
+
+```
+
+roughly 10 iterations.
+
+If:
+
+```
+n = 1000
+
+```
+
+roughly 1000 iterations.
+
+Therefore:
+
+```
+O(n)
+
+```
+
+```
+
+n       work
+
+10      10
+100     100
+1000    1000
+10000   10000
+
+```
+
+The work grows directly with input size.
