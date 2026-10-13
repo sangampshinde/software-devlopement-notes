@@ -174,6 +174,34 @@ test();
 
 ```
 
+- `Classes` are NOT hoisted in the same way as function declarations. This is a common source of confusion. Let me break it down
+
+- Class declarations are hoisted to the top of their scope, but they remain in a Temporal Dead Zone (TDZ) until the class definition is evaluated. In practice, this means you cannot use a class before it's declared.
+
+example:
+
+```javascript
+// Before declaration → still an error
+console.log(Person); // ReferenceError: Cannot access 'Person' before initialization
+
+class Person {
+  constructor(name) {
+    this.name = name;
+  }
+  greet() {
+    console.log(`Hi, my name is ${this.name}`);
+  }
+}
+
+// After declaration → works normally
+const p = new Person("Alice");
+p.greet(); // "Hi, my name is Alice"
+
+```
+
+
+
+
 ## 3. Difference Between == and === in JavaScript ?
 
 - `==`  — Loose equality (compares value after type coercion)
