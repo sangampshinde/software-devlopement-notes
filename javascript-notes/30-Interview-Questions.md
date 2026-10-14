@@ -498,6 +498,32 @@ console.log(counterB.value()); // 101
 
 ```
 
+1. What is `debounce`?
+
+- `Debounce` is a technique that delays a function's execution until after a certain amount of time has passed since it was last called. If the function is called again before that time, the timer resets.
+
+```javascript
+
+function debounce(fn, delay) {
+  let timer; // closed-over variable, persists across calls
+
+  return function (...args) {
+    clearTimeout(timer);              // cancel the previous pending call
+    timer = setTimeout(() => {        // schedule a new one
+      fn.apply(this, args);           // preserve `this` and args
+    }, delay);
+  };
+}
+
+
+const search = debounce((q) => console.log('API call:', q), 500);
+
+search('h');
+search('he');
+search('hel');
+search('hello'); // After 500ms of no calls → only "API call: hello" logs
+
+
 ## 7 What is the difference between `call`, `apply`, and `bind`?
 
 - All three methods let you control what this refers to inside a function
