@@ -523,6 +523,7 @@ search('he');
 search('hel');
 search('hello'); // After 500ms of no calls → only "API call: hello" logs
 
+```
 
 ## 7 What is the difference between `call`, `apply`, and `bind`?
 
